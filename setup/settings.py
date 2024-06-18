@@ -40,6 +40,9 @@ INSTALLED_APPS = [
 
     # apps
     'apps.escola.apps.EscolaConfig',
+
+    # django rest framework
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
