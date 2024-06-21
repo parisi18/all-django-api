@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from apps.clientes.models import Cliente
+from apps.clientes.validators import *
 
 class ClienteSerializer(serializers.ModelSerializer):
     """Exibindo todos os clientes"""
@@ -7,22 +8,13 @@ class ClienteSerializer(serializers.ModelSerializer):
         model = Cliente
         fields = '__all__'
 
-    def validate_cpf(self, cpf):
-        if len(cpf) != 11:
-            raise serializers.ValidationError("O CPF deve conter 11 dígitos.")
-        return cpf
-
-    def validate_nome(self, nome):
-        if not nome.isalpha():
-            raise serializers.ValidationError("O nome deve conter apenas letras.")
-        return nome
-    
-    def validate_rg(self, rg):
-        if len(rg) != 9:
-            raise serializers.ValidationError("O RG deve conter 9 dígitos.")
-        return rg
-    
-    def validate_celular(self, celular):
-        if len(celular) < 14:
-            raise serializers.ValidationError("O celular deve conter no mínimo 11 dígitos.")
-        return celular
+    def validate(self, data):
+        if not cpf_valido(data['cpf']):
+            raise serializers.ValidationError({"cpf": "Número de CPF inválido."})
+        if not nome_valido(data['nome']):
+            raise serializers.ValidationError({"nome": "O nome deve conter apenas letras."})
+        if not rg_valido(data['rg']):
+            raise serializers.ValidationError({"rg": "O RG deve conter 9 dígitos."})
+        if not celular_valido(data['celular']):
+            raise serializers.ValidationError({"celular": "O celular deve conter no mínimo 11 dígitos."})
+        return data
